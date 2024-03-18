@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 edit = "0.1.5"
 rusqlite = { version = "0.31.0", features = ["bundled"] }
+itertools = "0.12.1"

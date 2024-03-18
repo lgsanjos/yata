@@ -116,7 +116,7 @@ Task #5 "buy flour" | new status: "Done"
 # Future ideas
 * Active task, the task that you are working on the moment
 * Interruption - a quick task that will be created as Doing and will be "active"
-* Task description, timestamps, effort, importance, order
+* Task description, timestamps, effort, importance, order 
 * Task statuses configurable
 * Support multiple tags
 
