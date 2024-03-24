@@ -1,6 +1,7 @@
 use yat::execute_command;
 use std::env;
 
+mod db;
 mod cli;
 
 fn main() {
