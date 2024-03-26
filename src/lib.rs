@@ -10,6 +10,7 @@ use crate::{
 
 pub mod cli;
 pub mod db;
+pub mod parser;
 
 fn edit_tasks(conn: &rusqlite::Connection) {
     let tasks = select_non_done_tasks(&conn);
