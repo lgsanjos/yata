@@ -5,23 +5,26 @@ use crate::{
         parser::{parse_command, Command},
         serializer::{format_tasks_for_listing, serialize_tasks_by_status},
     },
-    db::crud::{connection, create, select_all, select_non_done_tasks, setup},
+    db::crud::{connection, create, select_all, select_non_done_tasks, setup}, parser::{diff::diff, serializer::serialize},
 };
 
 pub mod cli;
 pub mod db;
 pub mod parser;
+pub mod test;
 
-fn edit_tasks(conn: &rusqlite::Connection) {
+fn edit_tasks(conn: &rusqlite::Connection) -> String {
     let tasks = select_non_done_tasks(&conn);
-    let mut task_serialized = format_tasks_for_listing(tasks);
+    let mut task_serialized = format_tasks_for_listing(&tasks);
     task_serialized.push_str("\nDONE:\n");
 
     let new_state: Result<String, std::io::Error> = edit::edit(task_serialized);
-    println!("{}", new_state.unwrap());
+    let input = new_state.as_ref().unwrap();
+    let tasks_diff = diff(input, &tasks);
+    serialize(tasks_diff)
 }
 
-fn create_task(conn: &rusqlite::Connection, args: Vec<String>) {
+fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
     let t: Task = Task {
         id: 0_i32,
         project: "".into(),
@@ -30,16 +33,15 @@ fn create_task(conn: &rusqlite::Connection, args: Vec<String>) {
     };
 
     create(conn, &t);
+    return "Task created\n".to_string();
 }
 
-fn list_tasks(conn: &rusqlite::Connection, _args: Vec<String>) {
+fn list_tasks(conn: &rusqlite::Connection, _args: Vec<String>) -> String {
     let tasks = select_non_done_tasks(&conn);
-    let output = format_tasks_for_listing(tasks);
-
-    println!("{}", output);
+    format_tasks_for_listing(&tasks)
 }
 
-pub fn execute_command(mut cli_args: Vec<String>) {
+pub fn execute_command(mut cli_args: Vec<String>) -> String {
     let conn: rusqlite::Connection = connection();
     setup(&conn);
 
@@ -52,12 +54,11 @@ pub fn execute_command(mut cli_args: Vec<String>) {
             Command::Edit(_) => edit_tasks(&conn),
             Command::Status(_) => show_status(&conn),
         },
-        _ => println!("command not found"),
+        _ => "command not found".to_string(),
     }
 }
 
-fn show_status(conn: &rusqlite::Connection) {
+fn show_status(conn: &rusqlite::Connection) -> String {
     let tasks = select_all(&conn);
-    let output = serialize_tasks_by_status(tasks);
-    println!("{}", output);
+    serialize_tasks_by_status(&tasks)
 }

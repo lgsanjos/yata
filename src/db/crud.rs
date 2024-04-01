@@ -15,21 +15,20 @@ pub fn setup(conn: &Connection) -> bool {
             project TEXT NOT NULL
         )",
         (), // empty list of parameters.
-    );
+    ).is_ok()
 
-    let tasks = vec![
-        Task::new(0, "groceries", "TODO", "buy milk"),
-        Task::new(1, "groceries", "DOING", "buy eggs"),
-        Task::new(2, "yat", "TODO", "implement statuses command"),
-        Task::new(3, "groceries", "DONE", "buy eggs"),
-        Task::new(4, "yat", "DOING", "implement commands"),
-    ];
+    // let tasks = vec![
+    //     Task::new(1, "groceries", "TODO", "buy milk"),
+    //     Task::new(2, "groceries", "DOING", "buy eggs"),
+    //     Task::new(3, "yat", "TODO", "implement statuses command"),
+    //     Task::new(4, "groceries", "DONE", "buy eggs"),
+    //     Task::new(5, "yat", "DOING", "implement commands"),
+    // ];
+    //
+    // tasks.iter().for_each(|task| {
+    //     create(&conn, &task);
+    // });
 
-    tasks.iter().for_each(|task| {
-        create(&conn, &task);
-    });
-
-    return true;
 }
 
 pub fn create(conn: &Connection, task: &Task) -> bool {

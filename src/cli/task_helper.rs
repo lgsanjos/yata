@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::db::tasks::Task;
 
-pub fn task_by_projects(tasks: Vec<Task>) -> HashMap<String, Vec<Task>> {
+pub fn task_by_projects(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
     let mut hash: HashMap<String, Vec<Task>> = HashMap::new();
 
     tasks.iter().fold(&mut hash, |acc, task| {
@@ -15,7 +15,7 @@ pub fn task_by_projects(tasks: Vec<Task>) -> HashMap<String, Vec<Task>> {
     return hash;
 }
 
-pub fn task_by_statuses(tasks: Vec<Task>) -> HashMap<String, Vec<Task>> {
+pub fn task_by_statuses(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
     let mut hash: HashMap<String, Vec<Task>> = HashMap::new();
 
     tasks.iter().fold(&mut hash, |acc, task| {
@@ -28,6 +28,7 @@ pub fn task_by_statuses(tasks: Vec<Task>) -> HashMap<String, Vec<Task>> {
     return hash;
 }
 
+#[cfg(test)]
 #[test]
 fn test_task_by_projects() {
     let tasks = vec![
@@ -38,11 +39,10 @@ fn test_task_by_projects() {
         Task::new(4, "yat", "DOING", "implement commands"),
     ];
 
-    let output = task_by_projects(tasks);
+    let output = task_by_projects(&tasks);
 
     assert_eq!(
-        output.get("groceries").unwrap(),
-        &vec![
+        output.get("groceries").unwrap(), &vec![
             Task::new(0, "groceries", "TODO", "buy milk"),
             Task::new(1, "groceries", "DOING", "buy eggs"),
             Task::new(3, "groceries", "DONE", "buy eggs"),
@@ -59,15 +59,8 @@ fn test_task_by_projects() {
 
 #[test]
 fn test_task_by_statuses() {
-    let tasks = vec![
-        Task::new(0, "groceries", "TODO", "buy milk"),
-        Task::new(1, "groceries", "DOING", "buy eggs"),
-        Task::new(2, "yat", "TODO", "implement statuses command"),
-        Task::new(3, "groceries", "DONE", "buy eggs"),
-        Task::new(4, "yat", "DOING", "implement commands"),
-    ];
-
-    let output = task_by_statuses(tasks);
+    let tasks = crate::test::helper::create_task_list1();
+    let output = task_by_statuses(&tasks);
 
     assert_eq!(
         output.get("DOING").unwrap(),
@@ -78,7 +71,7 @@ fn test_task_by_statuses() {
     );
     assert_eq!(
         output.get("DONE").unwrap(),
-        &vec![Task::new(3, "groceries", "DONE", "buy eggs")]
+        &vec![Task::new(3, "groceries", "DONE", "buy flour")]
     );
     assert_eq!(
         output.get("TODO").unwrap(),
