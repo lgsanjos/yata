@@ -51,7 +51,7 @@ fn parse_status(buffer: &str) -> Option<String> {
 }
 
 fn parse_project(buffer: &str) -> Option<String> {
-    let project_regex = Regex::new(r"\t(\w+):").unwrap();
+    let project_regex = Regex::new(r"\s\s(\w+):").unwrap();
 
     if project_regex.is_match(&buffer) {
         let cap = project_regex.captures(&buffer).unwrap();
@@ -63,8 +63,8 @@ fn parse_project(buffer: &str) -> Option<String> {
 }
 
 fn parse_task(buffer: &str, status: &str, project: &str) -> Option<ParserTask> {
-    let edit_task_regex = Regex::new(r"\t\t(\d+)\t(.+)").unwrap();
-    let new_task_regex = Regex::new(r"\t\t(.+)").unwrap();
+    let edit_task_regex = Regex::new(r"\s\s\s\s(\d+)\s\s(.+)").unwrap();
+    let new_task_regex = Regex::new(r"\s\s\s\s(.+)").unwrap();
 
     if edit_task_regex.is_match(&buffer) {
         let cap = edit_task_regex.captures(&buffer).unwrap();
@@ -94,7 +94,7 @@ fn parse_task(buffer: &str, status: &str, project: &str) -> Option<ParserTask> {
 #[cfg(test)]
 #[test]
 fn test_parse_single_status_and_project() {
-    let input = "\nDOING:\n\tgroceries:\n\t\t321\tBuy eggs\n\t\t322\tBuy Milk\n";
+    let input = "\nDOING:\n  groceries:\n    321  Buy eggs\n    322  Buy Milk\n";
     let expected = vec![
         ParserTask {
             status: "DOING".to_string(),
@@ -115,7 +115,11 @@ fn test_parse_single_status_and_project() {
 
 #[test]
 fn test_parse_without_newline_at_end() {
-    let input = "\nDOING:\n\tgroceries:\n\t\t321\tBuy eggs\n\t\t322\tBuy Milk";
+    let input = "
+DOING:
+  groceries:
+    321  Buy eggs
+    322  Buy Milk";
     let expected = vec![
         ParserTask {
             status: "DOING".to_string(),
@@ -136,7 +140,11 @@ fn test_parse_without_newline_at_end() {
 
 #[test]
 fn test_parse_one_new_task_one_edit_task() {
-    let input = "\nDOING:\n\tgroceries:\n\t\t321\tBuy eggs\n\t\tBuy Flour\n";
+    let input = "\n
+DOING:
+  groceries:
+    321  Buy eggs
+    Buy Flour\n";
     let expected = vec![
         ParserTask {
             status: "DOING".to_string(),
@@ -157,7 +165,11 @@ fn test_parse_one_new_task_one_edit_task() {
 
 #[test]
 fn test_parse_one_new_task_one_edit_task_without_newline() {
-    let input = "\nDOING:\n\tgroceries:\n\t\t321\tBuy eggs\n\t\tBuy Flour";
+    let input = "
+DOING:
+  groceries:
+    321  Buy eggs
+    Buy Flour";
     let expected = vec![
         ParserTask {
             status: "DOING".to_string(),
@@ -179,26 +191,26 @@ fn test_parse_one_new_task_one_edit_task_without_newline() {
 #[test]
 fn test_parse_multiple_status_and_projects() {
     let input = "
-        Unnecessary comment 1
-        DOING:
-        \tgroceries:
-        \t\t321\tBuy eggs
-        \t\tBuy Flour
-        \tyat:
-        \t\t123\tDo something
-        \t\tDo something else
-        Unnecessary comment 2
-        TODO:
-        \tgroceries:
-        \t\t325\tBuy mozzarela
-        \t\tBuy burrata
-        Unnecessary comment 3
-        \tyat:
-        \t\tfinish parser
-        \t\tPublish
-        Unnecessary comment 4
-        Unnecessary comment 5
-        ";
+Unnecessary comment 1
+DOING:
+  groceries:
+    321  Buy eggs
+    Buy Flour
+  yat:
+    123  Do something
+    Do something else
+Unnecessary comment 2
+TODO:
+  groceries:
+    325  Buy mozzarela
+    Buy burrata
+Unnecessary comment 3
+  yat:
+    finish parser
+    Publish
+Unnecessary comment 4
+Unnecessary comment 5
+";
     let expected = vec![
         ParserTask {
             status: "DOING".to_string(),

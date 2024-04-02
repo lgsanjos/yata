@@ -3,18 +3,18 @@ use crate::db::tasks::Task;
 pub fn edit_tasks_input1() -> String {
     String::from("
 DOING:
-\tgroceries:
-\t\t1\tbuy eggs
-\tyat:
-\t\t4\timplement commands
+  groceries:
+    1  buy eggs
+  yat:
+    4  implement commands
 TODO:
-\tgroceries:
-\t\t0\tbuy milk
-\tyat:
-\t\t2\timplement statuses command
+  groceries:
+    0  buy milk
+  yat:
+    2  implement statuses command
 DONE:
-\tgroceries:
-\t\t3\tbuy flour
+  groceries:
+    3  buy flour
 ")
 }
 

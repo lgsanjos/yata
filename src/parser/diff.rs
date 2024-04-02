@@ -96,7 +96,7 @@ fn test_diff_empty_values() {
 
 #[test]
 fn test_diff_new_task() {
-    let diffs = diff("TODO:\n\tacme:\n\t\tnew task 123\n", &vec![]);
+    let diffs = diff("TODO:\n  acme:\n    new task 123\n", &vec![]);
     assert_eq!(diffs.len(), 1);
     assert_eq!(&diffs[0].operation, &DiffOperation::NewTask);
 
@@ -112,7 +112,7 @@ fn test_diff_new_task() {
 #[test]
 fn test_diff_edit_task() {
     let task = Task::new(1, "acme", "TODO", "new task 123");
-    let diffs = diff("TODO:\n\tacme:\n\t\t1\tediting task 123\n", &vec![task]);
+    let diffs = diff("TODO:\n  acme:\n    1  editing task 123\n", &vec![task]);
 
     assert_eq!(diffs.len(), 1);
     assert_eq!(&diffs[0].operation, &DiffOperation::UpdateTaskFields);

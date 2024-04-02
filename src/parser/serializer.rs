@@ -2,14 +2,17 @@ use itertools::Itertools;
 
 use super::diff::{DiffOperation, TaskDiff};
 
-pub fn serialize(diff: Vec<TaskDiff>) -> String {
+pub fn serialize(diff: &Vec<TaskDiff>) -> String {
     let mut result = String::new();
+
+    dbg!(diff);
 
     diff.iter()
         .into_group_map_by(|task_diff| task_diff.original_task.clone().unwrap().status)
         .into_iter()
         .sorted_by(|a, b| a.0.cmp(&b.0))
         .for_each(|(status, task_diffs)| {
+            dbg!("hello world group by {}", &status);
             result.push_str(&format!("{}:\n", status));
 
             task_diffs
@@ -89,7 +92,7 @@ fn test_serialize() {
         },
     ];
 
-    let serialized_diff = serialize(task_diffs);
+    let serialized_diff = serialize(&task_diffs);
     let expected = "DOING:
 \tgroceries:
 \t\t- 3\ttitle3

@@ -18,10 +18,10 @@ fn edit_tasks(conn: &rusqlite::Connection) -> String {
     let mut task_serialized = format_tasks_for_listing(&tasks);
     task_serialized.push_str("\nDONE:\n");
 
-    let new_state: Result<String, std::io::Error> = edit::edit(task_serialized);
-    let input = new_state.as_ref().unwrap();
-    let tasks_diff = diff(input, &tasks);
-    serialize(tasks_diff)
+    let input: String = edit::edit(task_serialized).unwrap();
+    dbg!(&input);
+    let tasks_diff = diff(&input, &tasks);
+    serialize(&tasks_diff)
 }
 
 fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
