@@ -10,7 +10,6 @@ pub enum DiffOperation {
     DoNothing,
 }
 
-
 #[derive(Debug, Clone)]
 pub struct TaskDiff {
     pub original_task: Option<Task>,
@@ -18,7 +17,7 @@ pub struct TaskDiff {
     pub operation: DiffOperation,
 }
 
-pub fn diff(input: &str, tasks: &Vec<Task>) -> Vec<TaskDiff> {
+pub fn diff(input: &str, tasks: &[Task]) -> Vec<TaskDiff> {
     let parsed_tasks = parse(input);
 
     // New Tasks
@@ -88,19 +87,19 @@ pub fn diff(input: &str, tasks: &Vec<Task>) -> Vec<TaskDiff> {
     let mut res: Vec<TaskDiff> = vec![];
     res.append(&mut new_tasks);
     res.append(&mut delete_or_update_tasks);
-    return res;
+    res
 }
 
 #[cfg(test)]
 #[test]
 fn test_diff_empty_values() {
-    let diffs = diff("", &vec![]);
+    let diffs = diff("", &[]);
     assert_eq!(diffs.len(), 0);
 }
 
 #[test]
 fn test_diff_new_task() {
-    let diffs = diff("TODO:\n  acme:\n    new task 123\n", &vec![]);
+    let diffs = diff("TODO:\n  acme:\n    new task 123\n", &[]);
     assert_eq!(diffs.len(), 1);
     assert_eq!(&diffs[0].operation, &DiffOperation::NewTask);
 
@@ -116,7 +115,7 @@ fn test_diff_new_task() {
 #[test]
 fn test_diff_edit_task() {
     let task = Task::new(1, "acme", "TODO", "new task 123");
-    let diffs = diff("TODO:\n  acme:\n    1  editing task 123\n", &vec![task]);
+    let diffs = diff("TODO:\n  acme:\n    1  editing task 123\n", &[task]);
 
     assert_eq!(diffs.len(), 1);
     assert_eq!(&diffs[0].operation, &DiffOperation::UpdateTaskFields);
