@@ -3,10 +3,14 @@ name = "yat"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "yat"
+path = "src/main.rs"
+
 # https://github.com/johnthagen/min-sized-rust
 [profile.release]
-strip = true  # Automatically strip symbols from the binary.
-opt-level = "z"  # Optimize for size.
+strip = true      # Automatically strip symbols from the binary.
+opt-level = "z"   # Optimize for size.
 lto = true
 codegen-units = 1
 panic = "abort"

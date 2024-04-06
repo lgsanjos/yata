@@ -1,17 +1,9 @@
 use itertools::Itertools;
 
-use crate::db::tasks::Task;
 use super::task_helper::{task_by_projects, task_by_statuses};
+use crate::db::tasks::Task;
 
 pub fn serialize_tasks(tasks: &Vec<Task>, serialiazer: fn(String, &Vec<Task>) -> String) -> String {
-    // Todo:
-    //     groceries:
-    //     yat:
-    // Doing:
-    //     yat:
-    // Done:
-    //     yat:
-
     let mut response: String = String::new();
 
     task_by_statuses(tasks)
@@ -31,22 +23,22 @@ pub fn serialize_tasks(tasks: &Vec<Task>, serialiazer: fn(String, &Vec<Task>) ->
                 });
         });
 
-    return response;
+    response
 }
 
 pub fn format_tasks_for_listing(tasks: &Vec<Task>) -> String {
     serialize_tasks(tasks, |project, tasks| {
         let tasks_output = tasks.iter().fold(String::new(), |acc, task| {
-            format!("{}\n\t\t{}\t{:?}", acc, task.id, task.title)
+            format!("{}\n    {}  {}", acc, task.id, task.title)
         });
 
-        format!("\t{}:{}", project, tasks_output)
+        format!("  {}:{}", project, tasks_output)
     })
 }
 
 pub fn serialize_tasks_by_status(tasks: &Vec<Task>) -> String {
     serialize_tasks(tasks, |project, tasks| {
-        format!("\t{}: {}", project, tasks.len())
+        format!("  {}: {}", project, tasks.len())
     })
 }
 
@@ -59,13 +51,13 @@ fn test_serialize_tasks_by_status() {
     let output = serialize_tasks_by_status(&tasks);
     let expected = "
 DOING:
-\tgroceries: 1
-\tyat: 1
+  groceries: 1
+  yat: 1
 DONE:
-\tgroceries: 1
+  groceries: 1
 TODO:
-\tgroceries: 1
-\tyat: 1";
+  groceries: 1
+  yat: 1";
 
     assert_eq!(expected, output);
 }

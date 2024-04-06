@@ -10,6 +10,7 @@ pub enum DiffOperation {
     DoNothing,
 }
 
+
 #[derive(Debug, Clone)]
 pub struct TaskDiff {
     pub original_task: Option<Task>,
@@ -23,7 +24,7 @@ pub fn diff(input: &str, tasks: &Vec<Task>) -> Vec<TaskDiff> {
     // New Tasks
     let mut new_tasks: Vec<TaskDiff> = parsed_tasks
         .iter()
-        .filter_map(|parser_task: &ParserTask|
+        .filter_map(|parser_task: &ParserTask| {
             if parser_task.id.is_none() {
                 Some(TaskDiff {
                     new_task: None,
@@ -38,7 +39,7 @@ pub fn diff(input: &str, tasks: &Vec<Task>) -> Vec<TaskDiff> {
             } else {
                 None
             }
-        )
+        })
         .collect();
 
     // Update and Delete Tasks
@@ -47,11 +48,14 @@ pub fn diff(input: &str, tasks: &Vec<Task>) -> Vec<TaskDiff> {
         .filter_map(|task| {
             let matching_new_task = parsed_tasks
                 .iter()
-                .find(|parser_task| parser_task.id.unwrap() == task.id);
+                .find(|parser_task| parser_task.id.unwrap_or_default() == task.id);
 
             match matching_new_task {
                 Some(parsed_task) => {
-                    if parsed_task.title == task.title {
+                    if parsed_task.title == task.title
+                        && parsed_task.status == task.status
+                        && parsed_task.project == task.project
+                    {
                         return Some(TaskDiff {
                             original_task: Some(task.clone()),
                             new_task: None,

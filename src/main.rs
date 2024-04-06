@@ -1,8 +1,8 @@
-use yat::execute_command;
 use std::env;
+use yat::execute_command;
 
-pub mod db;
 pub mod cli;
+pub mod db;
 pub mod parser;
 pub mod test;
 

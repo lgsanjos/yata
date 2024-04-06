@@ -15,7 +15,8 @@ pub fn setup(conn: &Connection) -> bool {
             project TEXT NOT NULL
         )",
         (), // empty list of parameters.
-    ).is_ok()
+    )
+    .is_ok()
 
     // let tasks = vec![
     //     Task::new(1, "groceries", "TODO", "buy milk"),
@@ -28,16 +29,33 @@ pub fn setup(conn: &Connection) -> bool {
     // tasks.iter().for_each(|task| {
     //     create(&conn, &task);
     // });
-
 }
 
-pub fn create(conn: &Connection, task: &Task) -> bool {
-    let res = conn.execute(
+pub fn create(conn: &Connection, task: &Task) -> Result<usize, rusqlite::Error> {
+    conn.execute(
         "INSERT INTO tasks (title, status, project) VALUES (?1, ?2, ?3)",
         (&task.title, &task.status, &task.project),
-    );
+    )
+}
 
-    res.is_ok()
+pub fn delete(conn: &Connection, task: &Task) -> Result<usize, rusqlite::Error> {
+    conn.execute("DELETE FROM tasks WHERE id = ?1", [task.id])
+}
+
+pub fn update(
+    conn: &Connection,
+    before_task: &Task,
+    after_task: &Task,
+) -> Result<usize, rusqlite::Error> {
+    conn.execute(
+        "UPDATE tasks SET title = ?1, project = ?2, status = ?3 WHERE id = ?4",
+        (
+            &after_task.title,
+            &after_task.project,
+            &after_task.status,
+            before_task.id,
+        ),
+    )
 }
 
 pub fn select_all(conn: &Connection) -> Vec<Task> {

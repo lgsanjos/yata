@@ -8,12 +8,14 @@ pub enum Command {
 
 pub fn parse_command(user_entry: Vec<String>) -> Option<Command> {
     match user_entry.split_first() {
-        Some((command, additional_args)) => match command.clone().as_ref() { "new" | "n" => return Some(Command::New(additional_args.to_vec())), "list" | "l" => return Some(Command::List(additional_args.to_vec())),
-            "status" | "st" => return Some(Command::Status(additional_args.to_vec())),
-            "edit" | "e" => return Some(Command::Edit(additional_args.to_vec())),
-            _ => return None,
+        Some((command, additional_args)) => match command.clone().as_ref() {
+            "new" | "n" => Some(Command::New(additional_args.to_vec())),
+            "list" | "l" => Some(Command::List(additional_args.to_vec())),
+            "status" | "st" => Some(Command::Status(additional_args.to_vec())),
+            "edit" | "e" => Some(Command::Edit(additional_args.to_vec())),
+            _ => None,
         },
-        _ => return None,
+        _ => None,
     }
 }
 

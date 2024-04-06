@@ -1,11 +1,19 @@
-use db::tasks::Task;
+use db::{
+    crud::{delete, update},
+    tasks::Task,
+};
+use parser::diff::DiffOperation::{DoNothing, NewTask, RemoveTask, UpdateTaskFields};
 
 use crate::{
     cli::{
         parser::{parse_command, Command},
         serializer::{format_tasks_for_listing, serialize_tasks_by_status},
     },
-    db::crud::{connection, create, select_all, select_non_done_tasks, setup}, parser::{diff::diff, serializer::serialize},
+    db::crud::{connection, create, select_all, select_non_done_tasks, setup},
+    parser::{
+        diff::{diff, TaskDiff},
+        serializer::serialize,
+    },
 };
 
 pub mod cli;
@@ -19,9 +27,29 @@ fn edit_tasks(conn: &rusqlite::Connection) -> String {
     task_serialized.push_str("\nDONE:\n");
 
     let input: String = edit::edit(task_serialized).unwrap();
-    dbg!(&input);
     let tasks_diff = diff(&input, &tasks);
+
+    tasks_diff
+        .iter()
+        .for_each(|diff: &TaskDiff| match diff.operation {
+            RemoveTask => display_result(delete(conn, &diff.original_task.clone().unwrap())),
+            UpdateTaskFields => display_result(update(
+                conn,
+                &diff.original_task.clone().unwrap(),
+                &diff.new_task.clone().unwrap(),
+            )),
+            NewTask => display_result(create(conn, &diff.original_task.clone().unwrap())),
+            DoNothing => (),
+        });
+
     serialize(&tasks_diff)
+}
+
+fn display_result(res: Result<usize, rusqlite::Error>) {
+    match res {
+        Ok(_) => (),
+        Err(err) => println!("Error: {}", err),
+    }
 }
 
 fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
@@ -32,8 +60,9 @@ fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
         title: args.join(" "),
     };
 
-    create(conn, &t);
-    return "Task created\n".to_string();
+    let _ = create(conn, &t);
+
+    "Task created".to_string()
 }
 
 fn list_tasks(conn: &rusqlite::Connection, _args: Vec<String>) -> String {
