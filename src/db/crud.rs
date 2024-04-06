@@ -6,17 +6,18 @@ pub fn connection() -> Connection {
     Connection::open("./.yat.db").unwrap()
 }
 
-pub fn setup(conn: &Connection) -> bool {
+pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS tasks (
             id      INTEGER PRIMARY KEY,
             title   TEXT NOT NULL,
             status  TEXT NOT NULL,
-            project TEXT NOT NULL
+            project TEXT NOT NULL,
+            created_at datetime default current_timestamp NOT NULL,
+            updated_at datetime default current_timestamp NOT NULL
         )",
         (), // empty list of parameters.
     )
-    .is_ok()
 
     // let tasks = vec![
     //     Task::new(1, "groceries", "TODO", "buy milk"),
@@ -48,7 +49,7 @@ pub fn update(
     after_task: &Task,
 ) -> Result<usize, rusqlite::Error> {
     conn.execute(
-        "UPDATE tasks SET title = ?1, project = ?2, status = ?3 WHERE id = ?4",
+        "UPDATE tasks SET title = ?1, project = ?2, status = ?3, updated_at = current_timestamp WHERE id = ?4",
         (
             &after_task.title,
             &after_task.project,

@@ -1,6 +1,6 @@
 use std::env;
 
-use yat::{create_task, edit_tasks, list_tasks, show_status};
+use yat::{create_task, display_result, edit_tasks, list_tasks, show_status};
 
 use crate::{
     cli::parser::{parse_command, Command},
@@ -15,7 +15,7 @@ pub mod test;
 
 fn execute_command(mut cli_args: Vec<String>) -> String {
     let conn: rusqlite::Connection = connection();
-    setup(&conn);
+    display_result(setup(&conn));
 
     cli_args.remove(0);
 

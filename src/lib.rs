@@ -18,6 +18,13 @@ pub mod db;
 pub mod task_diff;
 pub mod test;
 
+pub fn display_result(res: Result<usize, rusqlite::Error>) {
+    match res {
+        Ok(_) => (),
+        Err(err) => println!("Error: {}", err),
+    }
+}
+
 pub fn edit_tasks(conn: &rusqlite::Connection) -> String {
     let tasks = select_non_done_tasks(&conn);
     let mut task_serialized = format_tasks_for_listing(&tasks);
@@ -40,13 +47,6 @@ pub fn edit_tasks(conn: &rusqlite::Connection) -> String {
         });
 
     serialize(&tasks_diff)
-}
-
-pub fn display_result(res: Result<usize, rusqlite::Error>) {
-    match res {
-        Ok(_) => (),
-        Err(err) => println!("Error: {}", err),
-    }
 }
 
 pub fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
