@@ -6,35 +6,35 @@
 ## To create a new task
 
 input:
-```
+``` bash
 [n|new]
 [n|new] "buy milk"
 [n|new] "buy milk" #groceries
 [n|new] buy milk
 [n|new] buy milk --tag=groceries
-``` bash
+```
 
 output:
-```
+``` bash
 New task: 
 # Todo
 ## groceries
 1 "buy milk"
-``` bash
+```
 
 ## List current tasks
 
 input:
-```
+``` bash
 [l|list]
 [l|list] todo
 [l|list] doing
 [l|list] groceries
 [l|list] todo yat
-``` bash
+```
 
 output:
-```
+``` bash
 # Todo
 ## groceries
 1 "buy milk"
@@ -45,17 +45,17 @@ output:
 # Doing
 ## yat
 3 "Build list command"
-``` bash
+```
 
 ## Status
 
 input:
-```
-[st|status]
 ``` bash
+[st|status]
+```
 
 output:
-```
+``` bash
 Status
 
 Todo:
@@ -66,19 +66,19 @@ Doing:
     yat: 1
     Total: 1 task
 Done: 35 tasks
-``` bash
+```
 
 ## Edit / Plan / Organize
 
 input:
-```
+``` bash
 [e | edit]
 [e | edit] todo
 [e | edit] groceries
-``` bash
+```
 
 Editor input:
-```
+``` bash
 #### Edit tasks
 #### Change task titles, remove lines to delete task or move lines to update their status/category.
 
@@ -99,24 +99,25 @@ Editor input:
 ### Done - Move tasks here to mark as done
 5 "buy flour"
 
-
-``` bash
+```
 
 
 output:
-```
+``` bash
 Updating tasks:
 Task #1 "buy milk" | new title: "Buy Milk"
 Task #2 "buy eggs" | new title: "Buy Eggs"
 Task #5 "buy flour" | new status: "Done" 
-``` bash
-
-
+```
 
 # Future ideas
 * Active task, the task that you are working on the moment
-* Interruption - a quick task that will be created as Doing and will be "active"
+* Take over task - a quick task that will be created as Doing and will be "active"
 * Task description, timestamps, effort, importance, order 
-* Task statuses configurable
-* Support multiple tags
+* Task statuses and projects pre-configurable with order
+* Report: Show tasks marked as done yesterday
+* Report: Show what was done this week (grouped by day)
+* Scheduled tasks: New syntax to set scheduled tasks deadlines
+* Recurring tasks: Similar to scheduled tasks but this keeps creating or showing the same task in a given frequency
+* Display active task title in $PS2 (configurable and consider support with spaceship first)
 
