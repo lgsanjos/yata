@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::db::tasks::Task;
+use crate::command_execution::models::task::Task;
 
 pub fn task_by_projects(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
     let mut hash: HashMap<String, Vec<Task>> = HashMap::new();
@@ -42,7 +42,8 @@ fn test_task_by_projects() {
     let output = task_by_projects(&tasks);
 
     assert_eq!(
-        output.get("groceries").unwrap(), &vec![
+        output.get("groceries").unwrap(),
+        &vec![
             Task::new(0, "groceries", "TODO", "buy milk"),
             Task::new(1, "groceries", "DOING", "buy eggs"),
             Task::new(3, "groceries", "DONE", "buy eggs"),
@@ -81,4 +82,3 @@ fn test_task_by_statuses() {
         ]
     );
 }
-

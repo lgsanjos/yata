@@ -64,7 +64,7 @@ fn serialize_do_nothing_diff(task_diff: &TaskDiff) -> String {
 #[cfg(test)]
 #[test]
 fn test_serialize() {
-    use crate::db::tasks::Task;
+    use crate::command_execution::models::task::Task;
 
     let task_diffs = vec![
         TaskDiff {

@@ -1,21 +1,20 @@
-use db::{
-    crud::{delete, update},
-    tasks::Task,
-};
-use task_diff::diff::DiffOperation::{DoNothing, NewTask, RemoveTask, UpdateTaskFields};
-
 use crate::{
-    cli::serializer::{format_tasks_for_listing, serialize_tasks_by_status},
-    db::crud::{create, select_all, select_done_tasks, select_non_done_tasks},
-    task_diff::{
-        diff::{diff, TaskDiff},
-        serializer::serialize,
+    command_execution::{
+        models::task::Task,
+        persistence::crud::{
+            create, delete, select_all, select_done_tasks, select_non_done_tasks, update,
+        },
+        task_diff::{
+            diff::{diff, DiffOperation, TaskDiff},
+            serializer::serialize,
+        },
     },
+    output_serializer::output_serializer::{format_tasks_for_listing, serialize_tasks_by_status},
 };
 
-pub mod cli;
-pub mod db;
-pub mod task_diff;
+pub mod command_execution;
+pub mod input_parser;
+pub mod output_serializer;
 pub mod test;
 
 pub fn display_result(res: Result<usize, rusqlite::Error>) {
@@ -35,15 +34,19 @@ pub fn edit_tasks(conn: &rusqlite::Connection) -> String {
 
     tasks_diff
         .iter()
-        .for_each(|diff: &TaskDiff| match diff.operation {
-            RemoveTask => display_result(delete(conn, &diff.original_task.clone().unwrap())),
-            UpdateTaskFields => display_result(update(
+        .for_each(|diff: &TaskDiff| match diff.clone().operation {
+            DiffOperation::RemoveTask => {
+                display_result(delete(conn, &diff.original_task.clone().unwrap()))
+            }
+            DiffOperation::UpdateTaskFields => display_result(update(
                 conn,
                 &diff.original_task.clone().unwrap(),
                 &diff.new_task.clone().unwrap(),
             )),
-            NewTask => display_result(create(conn, &diff.original_task.clone().unwrap())),
-            DoNothing => (),
+            DiffOperation::NewTask => {
+                display_result(create(conn, &diff.original_task.clone().unwrap()))
+            }
+            DiffOperation::DoNothing => (),
         });
 
     serialize(&tasks_diff)

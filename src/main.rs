@@ -3,14 +3,13 @@ use std::env;
 use yat::{create_task, display_result, edit_tasks, list_tasks, show_status};
 
 use crate::{
-    cli::parser::{parse_command, Command},
-    db::crud::connection,
-    db::crud::setup,
+    command_execution::persistence::crud::{connection, setup},
+    input_parser::input_parser::{parse_command, Command},
 };
 
-pub mod cli;
-pub mod db;
-pub mod task_diff;
+pub mod command_execution;
+pub mod input_parser;
+pub mod output_serializer;
 pub mod test;
 
 fn execute_command(mut cli_args: Vec<String>) -> String {

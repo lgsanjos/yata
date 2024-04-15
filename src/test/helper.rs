@@ -1,7 +1,8 @@
-use crate::db::tasks::Task;
+use crate::command_execution::models::task::Task;
 
 pub fn edit_tasks_input1() -> String {
-    String::from("
+    String::from(
+        "
 DOING:
   groceries:
     1  buy eggs
@@ -15,7 +16,8 @@ TODO:
 DONE:
   groceries:
     3  buy flour
-")
+",
+    )
 }
 
 pub fn create_task_list1() -> Vec<Task> {

@@ -6,6 +6,8 @@ pub enum Command {
     Status(Vec<String>),
 }
 
+pub enum ListArgs {}
+
 pub fn parse_command(user_entry: Vec<String>) -> Option<Command> {
     match user_entry.split_first() {
         Some((command, additional_args)) => match command.clone().as_ref() {
@@ -17,6 +19,10 @@ pub fn parse_command(user_entry: Vec<String>) -> Option<Command> {
         },
         _ => None,
     }
+}
+
+fn parse_list_attributes(args: Vec<String>) -> Vec<ListArgs> {
+    vec![]
 }
 
 #[test]

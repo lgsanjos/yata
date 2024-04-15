@@ -1,7 +1,9 @@
 use itertools::Itertools;
 
-use super::task_helper::{task_by_projects, task_by_statuses};
-use crate::db::tasks::Task;
+use crate::{
+    command_execution::models::task::Task,
+    input_parser::task_helper::{task_by_projects, task_by_statuses},
+};
 
 pub fn serialize_tasks(tasks: &Vec<Task>, serialiazer: fn(String, &Vec<Task>) -> String) -> String {
     let mut response: String = String::new();

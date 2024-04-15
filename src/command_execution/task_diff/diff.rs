@@ -1,4 +1,7 @@
-use crate::db::tasks::Task;
+use crate::{
+    command_execution::models::task::Task,
+    test::helper::{create_task_list1, edit_tasks_input1},
+};
 
 use super::tokenizer::{parse, ParserTask};
 
@@ -134,8 +137,6 @@ fn test_diff_edit_task() {
 
 #[test]
 fn test_diff_with_no_changes() {
-    use crate::test::helper::{create_task_list1, edit_tasks_input1};
-
     let diffs = diff(&edit_tasks_input1(), &create_task_list1());
     assert_eq!(diffs.len(), 5);
 
