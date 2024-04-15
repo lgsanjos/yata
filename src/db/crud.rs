@@ -110,3 +110,29 @@ pub fn select_non_done_tasks(conn: &Connection) -> Vec<Task> {
 
     tasks
 }
+
+pub fn select_done_tasks(conn: &Connection) -> Vec<Task> {
+    let mut stmt: rusqlite::Statement<'_> = conn
+        .prepare("SELECT id, title, status, project FROM tasks where status = 'DONE' and updated_at > datetime('now', '-7 day') order by updated_at desc")
+        .unwrap();
+
+    let tasks_iter = stmt
+        .query_map([], |row| {
+            Ok(Task {
+                id: row.get(0)?,
+                title: row.get(1)?,
+                status: row.get(2)?,
+                project: row.get(3)?,
+            })
+        })
+        .unwrap();
+
+    let mut tasks: Vec<Task> = vec![];
+
+    tasks_iter.for_each(|x: Result<Task, rusqlite::Error>| {
+        let task = x.unwrap();
+        tasks.push(task);
+    });
+
+    tasks
+}

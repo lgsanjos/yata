@@ -6,7 +6,7 @@ use task_diff::diff::DiffOperation::{DoNothing, NewTask, RemoveTask, UpdateTaskF
 
 use crate::{
     cli::serializer::{format_tasks_for_listing, serialize_tasks_by_status},
-    db::crud::{create, select_all, select_non_done_tasks},
+    db::crud::{create, select_all, select_done_tasks, select_non_done_tasks},
     task_diff::{
         diff::{diff, TaskDiff},
         serializer::serialize,
@@ -63,8 +63,14 @@ pub fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
     "Task created".to_string()
 }
 
-pub fn list_tasks(conn: &rusqlite::Connection, _args: Vec<String>) -> String {
-    let tasks = select_non_done_tasks(&conn);
+pub fn list_tasks(conn: &rusqlite::Connection, args: Vec<String>) -> String {
+    let is_done = args.iter().find(|&a| a == "--done");
+
+    let tasks = match is_done {
+        Some(_) => select_done_tasks(conn),
+        None => select_non_done_tasks(conn),
+    };
+
     format_tasks_for_listing(&tasks)
 }
 
