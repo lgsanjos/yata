@@ -1,9 +1,13 @@
 use std::env;
 
-use yat::{create_task, display_result, edit_tasks, list_tasks, show_status};
-
 use crate::{
-    command_execution::persistence::crud::{connection, setup},
+    command_execution::{
+        commands::{
+            create_task::create_task, edit_tasks::edit_tasks, list_tasks::list_tasks,
+            status::show_status,
+        },
+        persistence::crud::{connection, setup},
+    },
     input_parser::input_parser::{parse_command, Command},
 };
 
@@ -12,9 +16,16 @@ pub mod input_parser;
 pub mod output_serializer;
 pub mod test;
 
+pub fn display_error_if_needed(res: Result<usize, rusqlite::Error>) {
+    match res {
+        Ok(_) => (),
+        Err(err) => println!("Error: {}", err),
+    }
+}
+
 fn execute_command(mut cli_args: Vec<String>) -> String {
     let conn: rusqlite::Connection = connection();
-    display_result(setup(&conn));
+    display_error_if_needed(setup(&conn));
 
     cli_args.remove(0);
 

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::command_execution::models::task::Task;
 
-pub fn task_by_projects(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
+pub fn task_by_projects(tasks: &[Task]) -> HashMap<String, Vec<Task>> {
     let mut hash: HashMap<String, Vec<Task>> = HashMap::new();
 
     tasks.iter().fold(&mut hash, |acc, task| {
@@ -12,7 +12,7 @@ pub fn task_by_projects(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
         acc
     });
 
-    return hash;
+    hash
 }
 
 pub fn task_by_statuses(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
@@ -25,7 +25,7 @@ pub fn task_by_statuses(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
         acc
     });
 
-    return hash;
+    hash
 }
 
 #[cfg(test)]
