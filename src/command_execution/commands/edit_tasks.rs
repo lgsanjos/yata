@@ -19,12 +19,12 @@ pub fn edit_tasks(conn: &rusqlite::Connection) -> String {
 
     tasks_diff
         .iter()
-        .for_each(|diff: &TaskDiff| process(conn, diff));
+        .for_each(|diff: &TaskDiff| process_diff(conn, diff));
 
     serialize(&tasks_diff)
 }
 
-fn process(conn: &rusqlite::Connection, diff: &TaskDiff) {
+fn process_diff(conn: &rusqlite::Connection, diff: &TaskDiff) {
     let res = match diff.operation {
         DiffOperation::RemoveTask => delete(conn, &diff.original_task.clone().unwrap()),
         DiffOperation::UpdateTaskFields => update(

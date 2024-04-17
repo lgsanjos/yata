@@ -13,6 +13,9 @@ pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
             title   TEXT NOT NULL,
             status  TEXT NOT NULL,
             project TEXT NOT NULL,
+            line_number INTEGER NOT NULL DEFAULT 0,
+            weight INTEGER NOT NULL DEFAULT 0,
+            duration INTEGER NOT NULL DEFAULT 0,
             created_at datetime default current_timestamp NOT NULL,
             updated_at datetime default current_timestamp NOT NULL
         )",
@@ -34,8 +37,8 @@ pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
 
 pub fn create(conn: &Connection, task: &Task) -> Result<usize, rusqlite::Error> {
     conn.execute(
-        "INSERT INTO tasks (title, status, project) VALUES (?1, ?2, ?3)",
-        (&task.title, &task.status, &task.project),
+        "INSERT INTO tasks (title, status, project, line_number) VALUES (?1, ?2, ?3, ?4)",
+        (&task.title, &task.status, &task.project, &task.line_number),
     )
 }
 
@@ -49,40 +52,22 @@ pub fn update(
     after_task: &Task,
 ) -> Result<usize, rusqlite::Error> {
     conn.execute(
-        "UPDATE tasks SET title = ?1, project = ?2, status = ?3, updated_at = current_timestamp WHERE id = ?4",
+        "UPDATE tasks SET title = ?1, project = ?2, status = ?3, line_number = ?4, updated_at = current_timestamp WHERE id = ?5",
         (
             &after_task.title,
             &after_task.project,
             &after_task.status,
+            &after_task.line_number,
             before_task.id,
         ),
     )
 }
 
 pub fn select_all(conn: &Connection) -> Vec<Task> {
-    let mut stmt: rusqlite::Statement<'_> = conn
-        .prepare("SELECT id, title, status, project FROM tasks")
-        .unwrap();
-
-    let tasks_iter = stmt
-        .query_map([], |row| {
-            Ok(Task {
-                id: row.get(0)?,
-                title: row.get(1)?,
-                status: row.get(2)?,
-                project: row.get(3)?,
-            })
-        })
-        .unwrap();
-
-    let mut tasks: Vec<Task> = vec![];
-
-    tasks_iter.for_each(|x: Result<Task, rusqlite::Error>| {
-        let task = x.unwrap();
-        tasks.push(task);
-    });
-
-    tasks
+    select(
+        conn,
+        "SELECT id, title, status, project, line_number FROM tasks",
+    )
 }
 
 fn select(conn: &Connection, query: &str) -> Vec<Task> {
@@ -90,12 +75,13 @@ fn select(conn: &Connection, query: &str) -> Vec<Task> {
 
     let tasks_iter = stmt
         .query_map([], |row| {
-            Ok(Task {
-                id: row.get(0)?,
-                title: row.get(1)?,
-                status: row.get(2)?,
-                project: row.get(3)?,
-            })
+            let id: i32 = row.get(0)?;
+            let title: String = row.get(1)?;
+            let status: String = row.get(2)?;
+            let project: String = row.get(3)?;
+            let line_number: u32 = row.get(4)?;
+
+            Ok(Task::new(id, &project, &status, &title, line_number))
         })
         .unwrap();
 
@@ -112,10 +98,10 @@ fn select(conn: &Connection, query: &str) -> Vec<Task> {
 pub fn select_non_done_tasks(conn: &Connection) -> Vec<Task> {
     select(
         conn,
-        "SELECT id, title, status, project FROM tasks where status != 'DONE'",
+        "SELECT id, title, status, project, line_number FROM tasks where status != 'DONE' ORDER BY line_number ASC",
     )
 }
 
 pub fn select_done_tasks(conn: &Connection) -> Vec<Task> {
-    select(conn, "SELECT id, title, status, project FROM tasks where status = 'DONE' and updated_at > datetime('now', '-7 day') order by updated_at desc")
+    select(conn, "SELECT id, title, status, project, line_number FROM tasks where status = 'DONE' and updated_at > datetime('now', '-7 day') ORDER BY line_number ASC")
 }

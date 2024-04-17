@@ -1,12 +1,7 @@
 use crate::command_execution::{models::task::Task, persistence::crud::create};
 
 pub fn create_task(conn: &rusqlite::Connection, args: Vec<String>) -> String {
-    let t: Task = Task {
-        id: 0_i32,
-        project: "".into(),
-        status: "TODO".into(),
-        title: args.join(" "),
-    };
+    let t: Task = Task::new(0_i32, "".into(), "TODO".into(), &args.join(" "), 0);
 
     let res = create(conn, &t);
 

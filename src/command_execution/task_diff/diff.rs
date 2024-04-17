@@ -3,7 +3,7 @@ use crate::{
     test::helper::{create_task_list1, edit_tasks_input1},
 };
 
-use super::tokenizer::{parse, ParserTask};
+use super::tokenizer::{parse, ParsedTask};
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub enum DiffOperation {
@@ -26,15 +26,16 @@ pub fn diff(input: &str, tasks: &[Task]) -> Vec<TaskDiff> {
     // New Tasks
     let mut new_tasks: Vec<TaskDiff> = parsed_tasks
         .iter()
-        .filter_map(|parser_task: &ParserTask| {
-            if parser_task.id.is_none() {
+        .filter_map(|parsed_task: &ParsedTask| {
+            if parsed_task.id.is_none() {
                 Some(TaskDiff {
                     new_task: None,
                     original_task: Some(Task::new(
                         0,
-                        &parser_task.project,
-                        &parser_task.status,
-                        &parser_task.title,
+                        &parsed_task.project,
+                        &parsed_task.status,
+                        &parsed_task.title,
+                        parsed_task.line_number,
                     )),
                     operation: DiffOperation::NewTask,
                 })
@@ -57,6 +58,7 @@ pub fn diff(input: &str, tasks: &[Task]) -> Vec<TaskDiff> {
                     if parsed_task.title == task.title
                         && parsed_task.status == task.status
                         && parsed_task.project == task.project
+                        && parsed_task.line_number == task.line_number
                     {
                         return Some(TaskDiff {
                             original_task: Some(task.clone()),
@@ -70,11 +72,12 @@ pub fn diff(input: &str, tasks: &[Task]) -> Vec<TaskDiff> {
                         &parsed_task.project,
                         &parsed_task.status,
                         &parsed_task.title,
+                        parsed_task.line_number,
                     );
 
                     Some(TaskDiff {
                         original_task: Some(task.clone()),
-                        new_task: Some(new_task.clone()),
+                        new_task: Some(new_task),
                         operation: DiffOperation::UpdateTaskFields,
                     })
                 }
@@ -117,7 +120,7 @@ fn test_diff_new_task() {
 
 #[test]
 fn test_diff_edit_task() {
-    let task = Task::new(1, "acme", "TODO", "new task 123");
+    let task = Task::new(1, "acme", "TODO", "new task 123", 0);
     let diffs = diff("TODO:\n  acme:\n    1  editing task 123\n", &[task]);
 
     assert_eq!(diffs.len(), 1);
@@ -138,9 +141,30 @@ fn test_diff_edit_task() {
 #[test]
 fn test_diff_with_no_changes() {
     let diffs = diff(&edit_tasks_input1(), &create_task_list1());
-    assert_eq!(diffs.len(), 5);
+    assert_eq!(diffs.len(), 6);
 
     diffs.iter().for_each(|diff| {
         assert_eq!(diff.operation, DiffOperation::DoNothing);
+    });
+}
+
+#[test]
+fn test_diff_with_order_change() {
+    let input = "
+DOING:
+  tasks:
+    2  task 2
+    1  task 1
+";
+    let tasks = vec![
+        Task::new(1, "tasks", "DOING", "task 1", 0),
+        Task::new(2, "tasks", "DOING", "task 2", 1),
+    ];
+
+    let diffs = diff(input, &tasks);
+    assert_eq!(diffs.len(), 2);
+
+    diffs.iter().for_each(|diff| {
+        assert_eq!(diff.operation, DiffOperation::UpdateTaskFields);
     });
 }

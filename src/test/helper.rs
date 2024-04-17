@@ -6,6 +6,7 @@ pub fn edit_tasks_input1() -> String {
 DOING:
   groceries:
     1  buy eggs
+    8  buy sugar
   yat:
     4  implement commands
 TODO:
@@ -22,10 +23,11 @@ DONE:
 
 pub fn create_task_list1() -> Vec<Task> {
     vec![
-        Task::new(0, "groceries", "TODO", "buy milk"),
-        Task::new(1, "groceries", "DOING", "buy eggs"),
-        Task::new(2, "yat", "TODO", "implement statuses command"),
-        Task::new(3, "groceries", "DONE", "buy flour"),
-        Task::new(4, "yat", "DOING", "implement commands"),
+        Task::new(0, "groceries", "TODO", "buy milk", 0),
+        Task::new(1, "groceries", "DOING", "buy eggs", 0),
+        Task::new(8, "groceries", "DOING", "buy sugar", 1),
+        Task::new(2, "yat", "TODO", "implement statuses command", 0),
+        Task::new(3, "groceries", "DONE", "buy flour", 0),
+        Task::new(4, "yat", "DOING", "implement commands", 0),
     ]
 }

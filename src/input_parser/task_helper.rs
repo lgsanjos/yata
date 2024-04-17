@@ -32,11 +32,11 @@ pub fn task_by_statuses(tasks: &Vec<Task>) -> HashMap<String, Vec<Task>> {
 #[test]
 fn test_task_by_projects() {
     let tasks = vec![
-        Task::new(0, "groceries", "TODO", "buy milk"),
-        Task::new(1, "groceries", "DOING", "buy eggs"),
-        Task::new(2, "yat", "TODO", "implement statuses command"),
-        Task::new(3, "groceries", "DONE", "buy eggs"),
-        Task::new(4, "yat", "DOING", "implement commands"),
+        Task::new(0, "groceries", "TODO", "buy milk", 0),
+        Task::new(1, "groceries", "DOING", "buy eggs", 0),
+        Task::new(2, "yat", "TODO", "implement statuses command", 0),
+        Task::new(3, "groceries", "DONE", "buy eggs", 0),
+        Task::new(4, "yat", "DOING", "implement commands", 0),
     ];
 
     let output = task_by_projects(&tasks);
@@ -44,16 +44,16 @@ fn test_task_by_projects() {
     assert_eq!(
         output.get("groceries").unwrap(),
         &vec![
-            Task::new(0, "groceries", "TODO", "buy milk"),
-            Task::new(1, "groceries", "DOING", "buy eggs"),
-            Task::new(3, "groceries", "DONE", "buy eggs"),
+            Task::new(0, "groceries", "TODO", "buy milk", 0),
+            Task::new(1, "groceries", "DOING", "buy eggs", 0),
+            Task::new(3, "groceries", "DONE", "buy eggs", 0),
         ]
     );
     assert_eq!(
         output.get("yat").unwrap(),
         &vec![
-            Task::new(2, "yat", "TODO", "implement statuses command"),
-            Task::new(4, "yat", "DOING", "implement commands"),
+            Task::new(2, "yat", "TODO", "implement statuses command", 0),
+            Task::new(4, "yat", "DOING", "implement commands", 0),
         ]
     );
 }
@@ -66,19 +66,20 @@ fn test_task_by_statuses() {
     assert_eq!(
         output.get("DOING").unwrap(),
         &vec![
-            Task::new(1, "groceries", "DOING", "buy eggs"),
-            Task::new(4, "yat", "DOING", "implement commands"),
+            Task::new(1, "groceries", "DOING", "buy eggs", 0),
+            Task::new(8, "groceries", "DOING", "buy sugar", 1),
+            Task::new(4, "yat", "DOING", "implement commands", 0),
         ]
     );
     assert_eq!(
         output.get("DONE").unwrap(),
-        &vec![Task::new(3, "groceries", "DONE", "buy flour")]
+        &vec![Task::new(3, "groceries", "DONE", "buy flour", 0)]
     );
     assert_eq!(
         output.get("TODO").unwrap(),
         &vec![
-            Task::new(0, "groceries", "TODO", "buy milk"),
-            Task::new(2, "yat", "TODO", "implement statuses command"),
+            Task::new(0, "groceries", "TODO", "buy milk", 0),
+            Task::new(2, "yat", "TODO", "implement statuses command", 0),
         ]
     );
 }

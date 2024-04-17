@@ -68,22 +68,22 @@ fn test_serialize() {
 
     let task_diffs = vec![
         TaskDiff {
-            original_task: Some(Task::new(1, "yat", "DOING", "title1")),
-            new_task: Some(Task::new(1, "yat", "DOING", "title1 - updated")),
+            original_task: Some(Task::new(1, "yat", "DOING", "title1", 0)),
+            new_task: Some(Task::new(1, "yat", "DOING", "title1 - updated", 0)),
             operation: DiffOperation::UpdateTaskFields,
         },
         TaskDiff {
-            original_task: Some(Task::new(2, "yat", "TODO", "title2")),
-            new_task: Some(Task::new(2, "project2", "status2", "title2")),
+            original_task: Some(Task::new(2, "yat", "TODO", "title2", 0)),
+            new_task: Some(Task::new(2, "project2", "status2", "title2", 0)),
             operation: DiffOperation::DoNothing,
         },
         TaskDiff {
-            original_task: Some(Task::new(3, "groceries", "DOING", "title3")),
+            original_task: Some(Task::new(3, "groceries", "DOING", "title3", 0)),
             new_task: None,
             operation: DiffOperation::RemoveTask,
         },
         TaskDiff {
-            original_task: Some(Task::new(4, "groceries", "TODO", "title4")),
+            original_task: Some(Task::new(4, "groceries", "TODO", "title4", 0)),
             new_task: None,
             operation: DiffOperation::NewTask,
         },

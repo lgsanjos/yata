@@ -53,7 +53,7 @@ fn test_serialize_tasks_by_status() {
     let output = serialize_tasks_by_status(&tasks);
     let expected = "
 DOING:
-  groceries: 1
+  groceries: 2
   yat: 1
 DONE:
   groceries: 1
