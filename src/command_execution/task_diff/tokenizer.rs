@@ -48,8 +48,8 @@ pub fn parse(input: &str) -> Vec<ParsedTask> {
 fn parse_status(buffer: &str) -> Option<String> {
     let status_regex = Regex::new(r"(\w+):").unwrap();
 
-    if status_regex.is_match(&buffer) {
-        let cap = status_regex.captures(&buffer).unwrap();
+    if status_regex.is_match(buffer) {
+        let cap = status_regex.captures(buffer).unwrap();
 
         return Some(cap.get(1).unwrap().as_str().to_string());
     }
@@ -60,8 +60,8 @@ fn parse_status(buffer: &str) -> Option<String> {
 fn parse_project(buffer: &str) -> Option<String> {
     let project_regex = Regex::new(r"\s\s(\w+):").unwrap();
 
-    if project_regex.is_match(&buffer) {
-        let cap = project_regex.captures(&buffer).unwrap();
+    if project_regex.is_match(buffer) {
+        let cap = project_regex.captures(buffer).unwrap();
 
         return Some(cap.get(1).unwrap().as_str().to_string());
     }
@@ -73,8 +73,8 @@ fn parse_task(buffer: &str, status: &str, project: &str, line_number: u32) -> Op
     let edit_task_regex = Regex::new(r"\s\s\s\s(\d+)\s\s(.+)").unwrap();
     let new_task_regex = Regex::new(r"\s\s\s\s(.+)").unwrap();
 
-    if edit_task_regex.is_match(&buffer) {
-        let cap = edit_task_regex.captures(&buffer).unwrap();
+    if edit_task_regex.is_match(buffer) {
+        let cap = edit_task_regex.captures(buffer).unwrap();
 
         return Some(ParsedTask {
             id: cap.get(1).unwrap().as_str().parse::<i32>().ok(),
@@ -85,8 +85,8 @@ fn parse_task(buffer: &str, status: &str, project: &str, line_number: u32) -> Op
         });
     }
 
-    if new_task_regex.is_match(&buffer) {
-        let cap = new_task_regex.captures(&buffer).unwrap();
+    if new_task_regex.is_match(buffer) {
+        let cap = new_task_regex.captures(buffer).unwrap();
 
         return Some(ParsedTask {
             id: None,
