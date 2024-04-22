@@ -1,9 +1,9 @@
 use rusqlite::Connection;
 
-use crate::command_execution::models::task::Task;
+use crate::{command_execution::models::task::Task, config::Config};
 
-pub fn connection() -> Connection {
-    Connection::open("./.yat.db").unwrap()
+pub fn connection(config: &Config) -> Connection {
+    Connection::open(&config.db_path).unwrap()
 }
 
 pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {

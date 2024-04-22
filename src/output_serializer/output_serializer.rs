@@ -16,7 +16,7 @@ pub fn serialize_tasks(tasks: &Vec<Task>, serialiazer: fn(String, &Vec<Task>) ->
 
             task_by_projects(&tasks_by_status)
                 .iter()
-                .sorted_by(|a, b| a.0.cmp(&b.0))
+                .sorted_by(|a, b| a.0.cmp(b.0))
                 .for_each(|(project, tasks_by_project)| {
                     response.push_str(&format!(
                         "\n{}",
@@ -63,3 +63,4 @@ TODO:
 
     assert_eq!(expected, output);
 }
+

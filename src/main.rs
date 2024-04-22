@@ -8,10 +8,12 @@ use crate::{
         },
         persistence::crud::{connection, setup},
     },
+    config::load_config_file,
     input_parser::input_parser::{parse_command, Command},
 };
 
 pub mod command_execution;
+pub mod config;
 pub mod input_parser;
 pub mod output_serializer;
 pub mod test;
@@ -24,7 +26,14 @@ pub fn display_error_if_needed(res: Result<usize, rusqlite::Error>) {
 }
 
 fn execute_command(mut cli_args: Vec<String>) -> String {
-    let conn: rusqlite::Connection = connection();
+    let parse_config = load_config_file("~/.yat/config.toml".to_string());
+    match parse_config {
+        Ok(_) => (),
+        Err(err) => return format!("Error: {}", err),
+    }
+    let config = parse_config.unwrap();
+
+    let conn: rusqlite::Connection = connection(&config);
     display_error_if_needed(setup(&conn));
 
     cli_args.remove(0);
