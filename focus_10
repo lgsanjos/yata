@@ -1,0 +1,33 @@
+# Task
+#10 [ ] analytics tickets {w@4, e@4}
+> https://ecosystem-platform.atlassian.net/browse/STR-1920
+> POC branch: https://bitbucket.org/atlassian/node-monorepo/commits/e892ed6addd35fd84898b9b6e77c65516bb6686d
+
+# Decisions/assumptions log
+1. Ignore FPT region for now.
+2. This metric wont work for non-dare projects but thats ok cause they are single region
+3. What do we log when dare region is not found?
+
+
+# Approach
+Identify the DaRe region and current ERSS region, compare and append as tags to SLO
+** Pull DaRe region from TCS (I believe XIS already does this)
+** Use POC branch to support additional metrics to SLO
+Append the following tags: crossRegion=True/False, ESSRegion=us-west2, DaReRegion=us-east2
+
+## Brainstorm
+
+## SubTasks
+[x] Confirm approach with Luke
+[ ] Copy DaRe region lookup from XIS (tcs/entity/cloud/${cloudId}-xis)
+[ ] Get ESS region using MICROS_AWS_REGION
+[ ] Write functionality that compares current ESS region to DaRe region and produce tags
+
+[ ] Identify SLO metrics
+[ ] Finish work for POC branch (tests/increment version/readme/changelog)
+
+
+# Timeline
+
+10:03 AM - Starting ticket
+

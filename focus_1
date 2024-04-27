@@ -1,0 +1,28 @@
+# Task
+#1 [ ] Deepcheck fix {w@4, e@3, d@20/04/2024}
+  > Deepcheck failed in ddev while CI was fine.
+
+# Approach
+* Fix DDEV custom deploy if possible. DONE
+
+## Brainstorm
+Research about the pipeline error
+
+# SubTasks
+[x] open pr (https://bitbucket.org/atlassian/entity-storage-service/pull-requests/1921)
+[x] Get new PR green
+[x] Deploy to DDEV
+[x] Get Approval check
+[x] Merge to master and monitor
+
+# Decisions/assumptions log
+
+# Timeline
+
+8:22 AM - No clear approach, might need to fix ddev deployment first 
+10:00 AM - Managed to deploy to ddev and simulate the deepcheck failiure
+11:43 AM - Changing hostname from hofund to localhost still didnt work
+2:00 PM - Got a green DDEV deployment. Identified that the issue was that I wasnt using the hostname assigned by micros
+2:01 PM - Starting new branch with cleaner change history 85e2cecd -> 142761c1
+2:05 PM - Pushing new branch with revert and an additional change to fix DDEV deployment
+

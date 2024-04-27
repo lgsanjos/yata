@@ -1,0 +1,37 @@
+# DOING
+  ## TEAM
+
+# TODO
+  ## TEAM
+  [ ] Learn how to profile nodejs - attempt to improve unit test performance {w@3}
+  > https://clinicjs.org/
+
+  ## TEAM
+  #11 [ ] TCS transformer for ESS
+  #12 [ ] Cache TCS response in ESS
+
+  ## YAT
+  #2 [ ] Fix YAT not loading config file correctly {w@2}
+  #3 [ ] Fix link to yat binary {w@2}
+
+  ## Personal
+  #4 [ ] Novated lease for phev {w@1}
+  > https://hello.atlassian.net/wiki/spaces/GDAY/pages/3507302835/Australia+-+Salary+Packaging+Electric+Vehicle+Novated+Leasing
+  > https://docs.google.com/spreadsheets/d/1CtpBXmuhRW3HrBjqJqnPeFhOfqCbPK-wXA17oz_1fuA/edit#gid=1209826502
+  > https://www.reddit.com/r/AusFinance/comments/195bu28/the_most_comprehensive_ev_novated_lease/
+
+# Waiting
+
+# DONE
+  ## TEAM
+  #6 [x] hofund timeout
+  > https://bitbucket.org/atlassian/entity-storage-service/pull-requests/1917
+  > Pipeline and review from Luke.
+  > Pipeline is ok, asked review from Luke
+  > ready to be merged (stg only) - Cancel the release ticket
+
+  #1 [x] Deepcheck fix {w@4, e@3, d@20/04/2024}
+  > Deepcheck failed in ddev while CI was fine.
+
+  #7 [x] Yarn upgrade
+
