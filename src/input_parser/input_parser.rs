@@ -4,6 +4,7 @@ pub enum Command {
     List(Vec<String>),
     New(Vec<String>),
     Status(Vec<String>),
+    Version,
 }
 
 pub enum ListArgs {}
@@ -15,6 +16,7 @@ pub fn parse_command(user_entry: Vec<String>) -> Option<Command> {
             "list" | "l" => Some(Command::List(additional_args.to_vec())),
             "status" | "st" => Some(Command::Status(additional_args.to_vec())),
             "edit" | "e" => Some(Command::Edit(additional_args.to_vec())),
+            "version" | "v" => Some(Command::Version),
             _ => None,
         },
         _ => None,

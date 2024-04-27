@@ -44,6 +44,7 @@ fn execute_command(mut cli_args: Vec<String>) -> String {
             Command::List(args) => list_tasks(&conn, args),
             Command::Edit(_) => edit_tasks(&conn),
             Command::Status(_) => show_status(&conn),
+            Command::Version => "0.0.1".to_string(),
         },
         _ => "command not found".to_string(),
     }
