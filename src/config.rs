@@ -74,7 +74,7 @@ pub fn load_config_file(filepath: String) -> Result<Config, toml::de::Error> {
 fn test_load_default_config_into_objects() {
     let config: Config = parse_config(default_config()).unwrap();
 
-    assert_eq!(config.db_path, "~/.yat/sqlite.db");
+    assert_eq!(config.db_path, "~/.yat.db");
     let status = config.status.unwrap();
     assert_eq!(status.len(), 3);
     assert_eq!(status[0].name, "TODO");
